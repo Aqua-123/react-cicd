@@ -1,12 +1,13 @@
-name: Deploy React App to GitHub Pages
+name: Build and Deploy React App
 
 on:
   push:
     branches:
-      - main   # Change to 'master' if that's your default branch
+      - main
+      - dev
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +24,15 @@ jobs:
 
       - name: Build React app
         run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Deploy only on main branch
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
